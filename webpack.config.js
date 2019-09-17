@@ -3,7 +3,7 @@ const entryPath = "Tag_Game_Project";
 const entryFile = "TagGame.js";
 
 module.exports = {
-    entry: [`./${entryPath}/js/${entryFile}`],
+    entry: ["whatwg-fetch",`./${entryPath}/js/${entryFile}`],
     output: {
         filename: "out.js",
         path: path.resolve(__dirname, `${entryPath}/build`)
