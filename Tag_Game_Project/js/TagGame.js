@@ -9,7 +9,7 @@ class Picture extends Component {
             // totalItems: null,
             tag: "",
             lines: "",
-            isReady: false
+            isReady: false,
         }
     }
 
@@ -62,6 +62,7 @@ class Picture extends Component {
         } else {
             return (
                 <>
+                    <Letters tag={this.state.tag}/>
                     <h1>{this.state.lines}</h1>
                     <img src={this.state.image}
                          alt="Oh... You should see the picture here. Something went wrong..."/>
@@ -71,11 +72,69 @@ class Picture extends Component {
     }
 }
 
+class Letters extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            letter: "",
+            infoMessage: ""
+        }
+    }
+
+    provideLetter = event => {
+        this.setState({letter: event.target.value});
+    };
+
+    submitLetter = event => {
+        event.preventDefault();
+        console.log('The letter "' + this.state.letter + '" has been provided');
+        const allLetters = new RegExp(this.state.letter, "gi");
+        console.log(allLetters);
+        for (let i = 0; i < this.props.tag.length; i++) {
+            if (this.props.tag[i] === this.state.letter) {
+                console.log("Great! This tag concerns letter " + this.state.letter);
+                this.setState({
+                    infoMessage: "Great! This tag concerns this letter",
+                    letter: ""
+                });
+                return null;
+            }
+        }
+        this.setState({
+            infoMessage: "Ups! Something went wrong. Try again!",
+            letter: ""
+        });
+        return null;
+    };
+
+    render() {
+        return (
+            <>
+                <form onSubmit={this.submitLetter}>
+                    <h3>{this.state.infoMessage}</h3>
+                    <label>
+                        Write only one single letter:
+                        <input type="text" letter="letter" maxLength="1" pattern="[A-Za-z]" value={this.state.letter}
+                               onChange={this.provideLetter}/>
+                    </label>
+                    <input type="submit" value="Check my letter"/>
+                </form>
+            </>
+
+        )
+    }
+}
+
 class App
     extends Component {
     render() {
         console.log("dziala");
-        return <Picture/>;
+        return (
+            <>
+                {/*<Letters/>*/}
+                <Picture/>
+            </>
+        )
     }
 }
 
