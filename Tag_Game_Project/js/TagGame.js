@@ -62,7 +62,7 @@ class Picture extends Component {
         } else {
             return (
                 <>
-                    <Letters tag={this.state.tag}/>
+                    <Letters tag={this.state.tag} lines={this.state.lines}/>
                     <h1>{this.state.lines}</h1>
                     <img src={this.state.image}
                          alt="Oh... You should see the picture here. Something went wrong..."/>
@@ -77,7 +77,8 @@ class Letters extends Component {
         super(props);
         this.state = {
             letter: "",
-            infoMessage: ""
+            infoMessage: "",
+            foundLetters: ""
         }
     }
 
@@ -88,23 +89,33 @@ class Letters extends Component {
     submitLetter = event => {
         event.preventDefault();
         console.log('The letter "' + this.state.letter + '" has been provided');
-        const allLetters = new RegExp(this.state.letter, "gi");
-        console.log(allLetters);
+        let letterWasFound = false;
+        let arrayWithLinesToShow = [];
         for (let i = 0; i < this.props.tag.length; i++) {
             if (this.props.tag[i] === this.state.letter) {
+                letterWasFound = true;
+                arrayWithLinesToShow.push(i);
                 console.log("Great! This tag concerns letter " + this.state.letter);
                 this.setState({
                     infoMessage: "Great! This tag concerns this letter",
                     letter: ""
                 });
-                return null;
             }
+            console.log(arrayWithLinesToShow);
         }
-        this.setState({
-            infoMessage: "Ups! Something went wrong. Try again!",
-            letter: ""
-        });
-        return null;
+        if (letterWasFound) {
+            for (let j = 0; j < arrayWithLinesToShow.length; j++) {
+                this.props.lines[j] = this.state.letter;
+            }
+            this.setState({
+                foundLetters: linesToChange
+            })
+        } else {
+            this.setState({
+                infoMessage: "Ups! Something went wrong. Try again!",
+                letter: ""
+            });
+        }
     };
 
     render() {
@@ -119,9 +130,46 @@ class Letters extends Component {
                     </label>
                     <input type="submit" value="Check my letter"/>
                 </form>
+                <Points letters={this.state.foundLetters}/>
             </>
-
         )
+    }
+}
+
+class Points extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            points: 0
+        }
+    }
+
+    addPoint = event => {
+        event.preventDefault();
+        let sumOfPoints = 0;
+        if (this.props.foundLetters > 0) {
+            sumOfPoints = sumOfPoints + (this.props.foundLetters.length + 1);
+        } else {
+            sumOfPoints = sumOfPoints - 1;
+            if (sumOfPoints < 0) {
+                sumOfPoints = 0;
+            }
+        }
+    };
+
+    render() {
+        return (
+            <>
+                <h4>Your points:</h4>
+                <p>{this.state.points}</p>
+            </>
+        )
+    }
+}
+
+class Puzzle extends Component {
+    render() {
+        return
     }
 }
 
@@ -131,7 +179,6 @@ class App
         console.log("dziala");
         return (
             <>
-                {/*<Letters/>*/}
                 <Picture/>
             </>
         )
