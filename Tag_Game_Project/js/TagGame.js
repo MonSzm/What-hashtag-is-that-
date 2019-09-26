@@ -38,9 +38,9 @@ class Picture extends Component {
                 let result = "";
                 for (let i = 0; i < theLongestTag.length; i++) {
                     if (theLongestTag[i] === " ") {
-                        result = result + "\u00a0\u00a0"
+                        result = result + "\u00a0";
                     } else {
-                        result = result + "_ ";
+                        result = result + "_";
                     }
                 }
                 console.log(result);
@@ -56,14 +56,32 @@ class Picture extends Component {
         });
     }
 
+    revealLetter = (letter) => {
+        let allLinesToShow = "";
+        for (let i = 0; i < this.state.tag.length; i++) {
+            if (this.state.tag[i] === letter) {
+                allLinesToShow = allLinesToShow + letter;
+            } else {
+                allLinesToShow = allLinesToShow + this.state.lines[i];
+            }
+        }
+        this.setState({
+            lines: allLinesToShow
+        })
+    };
+
     render() {
+        let tagWithSpace = "";
+        for (let i = 0; i < this.state.lines.length; i++) {
+            tagWithSpace = tagWithSpace + this.state.lines[i] + " ";
+        }
         if (!this.state.isReady) {
             return <h1>Hmm... Give me a second please</h1>
         } else {
             return (
                 <>
-                    <Letters tag={this.state.tag} lines={this.state.lines}/>
-                    <h1>{this.state.lines}</h1>
+                    <Letters tag={this.state.tag} lines={this.state.lines} revealLetter={this.revealLetter}/>
+                    <h1>{tagWithSpace}</h1>
                     <img src={this.state.image}
                          alt="Oh... You should see the picture here. Something went wrong..."/>
                 </>
@@ -78,7 +96,6 @@ class Letters extends Component {
         this.state = {
             letter: "",
             infoMessage: "",
-            foundLetters: ""
         }
     }
 
@@ -104,12 +121,7 @@ class Letters extends Component {
             console.log(arrayWithLinesToShow);
         }
         if (letterWasFound) {
-            for (let j = 0; j < arrayWithLinesToShow.length; j++) {
-                this.props.lines[j] = this.state.letter;
-            }
-            this.setState({
-                foundLetters: linesToChange
-            })
+            this.props.revealLetter(this.state.letter);
         } else {
             this.setState({
                 infoMessage: "Ups! Something went wrong. Try again!",
