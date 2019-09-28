@@ -65,9 +65,12 @@ class Picture extends Component {
                 allLinesToShow = allLinesToShow + this.state.lines[i];
             }
         }
-        this.setState({
-            lines: allLinesToShow
-        })
+        setTimeout(() => {
+            this.setState({
+                lines: allLinesToShow
+            })
+
+        }, 2500)
     };
 
     render() {
@@ -90,18 +93,31 @@ class Picture extends Component {
     }
 }
 
-class Letters extends Component {
+class Letters
+    extends Component {
     constructor(props) {
         super(props);
         this.state = {
             letter: "",
             infoMessage: "",
+            divIsShown: false
         }
     }
 
     provideLetter = event => {
         this.setState({letter: event.target.value});
     };
+
+    componentDidMount() {
+        document.addEventListener('keyup', (event) => {
+            //console.log(event.keyCode,event.key);
+            if (event.keyCode >= 65 && event.keyCode < 91) {
+                console.log(event.key);
+                this.setState({letter: event.key});
+                this.submitLetter(event)
+            }
+        });
+    }
 
     submitLetter = event => {
         event.preventDefault();
@@ -112,37 +128,39 @@ class Letters extends Component {
             if (this.props.tag[i] === this.state.letter) {
                 letterWasFound = true;
                 arrayWithLinesToShow.push(i);
+                console.log(arrayWithLinesToShow);
                 console.log("Great! This tag concerns letter " + this.state.letter);
                 this.setState({
-                    infoMessage: "Great! This tag concerns this letter",
-                    letter: ""
-                });
+                    infoMessage: "Great! You are right!",
+                    divIsShown: true
+                })
             }
-            console.log(arrayWithLinesToShow);
         }
+        console.log(arrayWithLinesToShow);
         if (letterWasFound) {
             this.props.revealLetter(this.state.letter);
         } else {
             this.setState({
-                infoMessage: "Ups! Something went wrong. Try again!",
-                letter: ""
-            });
+                infoMessage: "Ups! Try again!",
+                divIsShown: true
+            })
         }
+        setTimeout(() => {
+            this.setState({
+                divIsShown: false
+            })
+        }, 1500)
     };
 
     render() {
         return (
             <>
-                <form onSubmit={this.submitLetter}>
-                    <h3>{this.state.infoMessage}</h3>
-                    <label>
-                        Write only one single letter:
-                        <input type="text" letter="letter" maxLength="1" pattern="[A-Za-z]" value={this.state.letter}
-                               onChange={this.provideLetter}/>
-                    </label>
-                    <input type="submit" value="Check my letter"/>
-                </form>
                 <Points letters={this.state.foundLetters}/>
+                <div id="message" className={this.state.divIsShown ? "show" : "hide"}>
+                    <p>{this.state.infoMessage}</p>
+                    <h1>{this.state.letter}</h1>
+                </div>
+                <div>Letter provided: {this.state.letter}</div>
             </>
         )
     }
@@ -176,12 +194,6 @@ class Points extends Component {
                 <p>{this.state.points}</p>
             </>
         )
-    }
-}
-
-class Puzzle extends Component {
-    render() {
-        return
     }
 }
 
