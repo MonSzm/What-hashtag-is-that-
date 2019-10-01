@@ -8,7 +8,7 @@ class Picture extends Component {
             image: null,
             // totalItems: null,
             tag: "",
-            lines: "",
+            line: "",
             isReady: false,
         }
     }
@@ -16,37 +16,24 @@ class Picture extends Component {
     componentDidMount() {
         const randomPage = Math.floor(Math.random() * (500 / 20)) + 1;
         const link = `https://pixabay.com/api/?key=12966633-fd9ff535ce9bc796fb4579b12&image_type=photo&lang=pl&page=` + randomPage;
-        console.log(link);
         const randomNumber = Math.floor(Math.random() * 20);
         console.log(randomNumber);
         fetch(link)
             .then(response => response.json())
             .then(data => {
                 const tags = data.hits[randomNumber].tags;
-                console.log(tags);
+                console.log("Tags:", tags);
                 const arrayWithTags = tags.split(/\s*,\s*/);
-                console.log(arrayWithTags);
-                const sort = arrayWithTags.sort((a, b) => {
-                    return a.length - b.length
-                });
-                console.log(sort);
-                const numberOfItemsInArray = arrayWithTags.length;
-                console.log(numberOfItemsInArray);
-                const theLongestTag = arrayWithTags[numberOfItemsInArray - 1];
-                console.log(theLongestTag);
-
-                let result = "";
+                const sort = arrayWithTags.sort((a, b) => a.length - b.length);
+                console.log("Sorted:", sort);
+                const theLongestTag = arrayWithTags[arrayWithTags.length - 1];
+                console.log("Longest:", theLongestTag);
+                let line = "";
                 for (let i = 0; i < theLongestTag.length; i++) {
-                    if (theLongestTag[i] === " ") {
-                        result = result + "\u00a0";
-                    } else {
-                        result = result + "_";
-                    }
+                    line += theLongestTag[i] === " " ? "\u00a0" : "_";
                 }
-                console.log(result);
                 this.setState({
-                    // totalItems: data.total,
-                    lines: result,
+                    line: line,
                     tag: theLongestTag,
                     image: data.hits[randomNumber].webformatURL,
                     isReady: true
@@ -56,36 +43,15 @@ class Picture extends Component {
         });
     }
 
-    revealLetter = (letter) => {
-        let allLinesToShow = "";
-        for (let i = 0; i < this.state.tag.length; i++) {
-            if (this.state.tag[i] === letter) {
-                allLinesToShow = allLinesToShow + letter;
-            } else {
-                allLinesToShow = allLinesToShow + this.state.lines[i];
-            }
-        }
-        setTimeout(() => {
-            this.setState({
-                lines: allLinesToShow
-            })
-        }, 2000);
-        console.log(allLinesToShow)
-    };
-
     render() {
-        let tagWithSpace = "";
-        for (let i = 0; i < this.state.lines.length; i++) {
-            tagWithSpace = tagWithSpace + this.state.lines[i] + " ";
-        }
+        console.log("Picture:", this.state.line, this.revealLetter);
         if (!this.state.isReady) {
             return <h1>Hmm... Give me a second please</h1>
         } else {
             return (
                 <>
                     <h2 style={{backgroundColor: "pink"}}>{this.state.tag}</h2>
-                    <Letters tag={this.state.tag} lines={this.state.lines} revealLetter={this.revealLetter}/>
-                    <h1>{tagWithSpace}</h1>
+                    <Letters tag={this.state.tag} line={this.state.line}/>
                     <img src={this.state.image}
                          alt="Oh... You should see the picture here. Something went wrong..."/>
                 </>
@@ -98,78 +64,142 @@ class Letters extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            line: this.props.line,
             letter: "",
             infoMessage: "",
             divIsShown: false,
-            numberOfLettersToShow: ""
+            numberOfLettersToShow: [],
+            points: 0,
+            inputIsShown: false,
+            solution: "",
+            solve: false
         }
     }
 
     componentDidMount() {
         document.addEventListener('keyup', (event) => {
-            if (event.keyCode >= 65 && event.keyCode < 91) {
-                console.log(event.key);
+            if (event.keyCode >= 65 && event.keyCode < 91 && this.state.solve === false) {
+                console.log("Key:", event.key);
                 this.setState({letter: event.key});
                 this.submitLetter(event);
-                console.log(this.submitLetter(event));
+                // this.solveTheTag(event);
+                // this.checkSolution(event);
             }
+        });
+        document.addEventListener('submit', (event) => {
+            // document.removeEventListener('keyup', (event) => {
+            //     this.submitLetter(event);
+            // });
+            this.solveTheTag(event);
+            this.checkSolution(event);
         })
     }
 
+    // componentDidUpdate() {
+    //     document.addEventListener('submit', (event) => {
+    //         this.solveTheTag(event);
+    //         this.checkSolution(event);
+    //     })
+    // }
+
+    // componentDidUpdate() {
+    //     console.log("letters update");
+    // }
+
     submitLetter = event => {
-        console.log(event);
-        console.log(this.props);
+        console.log("Letters props: ", this.props);
         event.preventDefault();
         console.log('The letter "' + this.state.letter + '" has been provided');
-        let letterWasFound = false;
+        //let letterWasFound = false;
         let arrayWithLinesToShow = [];
         console.log(this.props.tag.length);
         for (let i = 0; i < this.props.tag.length; i++) {
             if (this.props.tag[i] === this.state.letter) {
-                letterWasFound = true;
+                //letterWasFound = true;
                 arrayWithLinesToShow.push(i);
                 console.log("Great! This tag concerns letter " + this.state.letter);
             }
         }
         console.log(arrayWithLinesToShow);
-        if (letterWasFound) {
-            this.props.revealLetter(this.state.letter);
+        if (arrayWithLinesToShow.length > 0) {
             this.setState({
                 infoMessage: "Great! You are right!",
                 divIsShown: true,
-                numberOfLettersToShow: arrayWithLinesToShow
+                numberOfLettersToShow: arrayWithLinesToShow,
+                points: this.state.points + arrayWithLinesToShow.length
             })
         } else {
             this.setState({
                 infoMessage: "Ups! Try again!",
-                divIsShown: true
+                divIsShown: true,
+                points: this.state.points > 0 ? this.state.points - 1 : this.state.points
             })
         }
-        console.log(this.state.numberOfLettersToShow);
         setTimeout(() => {
+            let allLinesToShow = "";
+            console.log("submit letter:", this.props.tag, this.state.letter);
+            for (let i = 0; i < this.props.tag.length; i++) {
+                allLinesToShow += this.props.tag[i] === this.state.letter ? this.state.letter : this.state.line[i];
+            }
             this.setState({
+                line: allLinesToShow,
                 divIsShown: false
             })
         }, 1500);
         console.log(this.state.numberOfLettersToShow);
     };
 
-    // solveTheTag = event => {
-    //
-    // };
+    provideLetter = event => {
+        console.log(event.target.value);
+        this.setState({solution: event.target.value});
+    };
+
+    solveTheTag = event => {
+        this.setState({
+            inputIsShown: !this.state.inputIsShown,
+            solve: true,
+        })
+    };
+
+    checkSolution = event => {
+        event.preventDefault();
+        if (this.state.solution === this.props.tag) {
+            this.state.solution = this.props.tag;
+            // for (let i = 0; i < this.props.tag.length; i++) {
+            //     this.props.tag[i] = this.state.solution[i];
+            // }
+            alert("ok");
+        } else {
+            alert("not ok");
+        }
+        // for (let i = 0; this.state.checkSolution; i++) {
+        //     if (this.state.checkSolution.length === this.props.tag.length
+        //         && this.state.checkSolution[i] === this.props.tag[i]) {
+        //         console.log('Brawo');
+        //     }
+        // }
+    };
 
     render() {
         return (
             <>
-                <h1 style={{backgroundColor: "red"}}>{this.state.numberOfLettersToShow}</h1>
-                <Points lettersToShow={this.state.numberOfLettersToShow} letter={this.state.letter}/>
+                <h1 className="spaces">{this.state.line}</h1>
+                <Points lettersToShow={this.state.numberOfLettersToShow} letter={this.state.letter}
+                        points={this.state.points}/>
+                <button onClick={this.solveTheTag}>Solve the tag</button>
+                <form className={this.state.inputIsShown ? "show" : "hide"}>
+                    <label> Provide your solution of this tag
+                        <input id="solve" type="text"
+                               onChange={this.provideLetter}/>
+                    </label>
+                    <input type="submit" value="Check my solution" onClick={this.state.checkSolution}/>
+                    <input type="submit" value="Hmm... guess letters"/>
+                </form>
                 <div id="message" className={this.state.divIsShown ? "show" : "hide"}>
                     <p>{this.state.infoMessage}</p>
                     <h1>{this.state.letter}</h1>
                 </div>
                 <div>Letter provided: {this.state.letter}</div>
-                {/*<button onClick={this.solveTheTag}>Solve the tag</button>*/}
-                {/*<input id="solve" className={} type="text"/>*/}
             </>
         )
     }
@@ -177,50 +207,17 @@ class Letters extends Component {
 
 class Points extends Component {
     constructor(props) {
+        console.log("Points constructor");
         super(props);
         this.state = {
             points: 0
         }
     }
 
-    componentDidMount() {
-
-        document.addEventListener('keyup', (event) => {
-            if (event.keyCode >= 65 && event.keyCode < 91) {
-                console.log(event.key);
-                this.addPoint(event);
-                console.log(this.addPoint(event));
-            }
-        })
-    }
-
-    addPoint = event => {
-        console.log(event);
-        console.log(this.props);
-        event.preventDefault();
-        let sumOfPoints = 0;
-        console.log(this.props, this.props.lettersToShow);
-        if (this.props.lettersToShow.length > 0) {
-            console.log(this.props.lettersToShow);
-            sumOfPoints = sumOfPoints + this.props.lettersToShow.length;
-        } else {
-            sumOfPoints = sumOfPoints - 1;
-            if (sumOfPoints < 0) {
-                sumOfPoints = 0;
-            }
-        }
-        this.setState({
-            points: sumOfPoints
-        })
-    };
-
     render() {
         return (
             <>
-                <h4>Your points:</h4>
-                <p>{this.state.points}</p>
-                <p>{this.props.lettersToShow}</p>
-                <p>{this.props.letter}</p>
+                <h4>Your points: {this.props.points}</h4>
             </>
         )
     }
