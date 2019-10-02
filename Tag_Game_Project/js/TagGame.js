@@ -10,10 +10,15 @@ class Picture extends Component {
             tag: "",
             line: "",
             isReady: false,
-        }
+        };
+        this.refreshGame = this.refreshGame.bind(this);
     }
 
     componentDidMount() {
+        this.refreshGame();
+    }
+
+    refreshGame = () => {
         const randomPage = Math.floor(Math.random() * (500 / 20)) + 1;
         const link = `https://pixabay.com/api/?key=12966633-fd9ff535ce9bc796fb4579b12&image_type=photo&lang=pl&page=` + randomPage;
         const randomNumber = Math.floor(Math.random() * 20);
@@ -41,17 +46,18 @@ class Picture extends Component {
             }).catch(error => {
             console.log(error)
         });
-    }
+    };
 
     render() {
-        console.log("Picture:", this.state.line, this.revealLetter);
+        console.log("Picture:", this.state.line);
         if (!this.state.isReady) {
             return <h1>Hmm... Give me a second please</h1>
         } else {
             return (
                 <>
                     <h2 style={{backgroundColor: "pink"}}>{this.state.tag}</h2>
-                    <Letters tag={this.state.tag} line={this.state.line}/>
+                    <Letters tag={this.state.tag} line={this.state.line} refreshGame={this.refreshGame}
+                             image={this.state.image} isReady={this.state.isReady}/>
                     <img src={this.state.image}
                          alt="Oh... You should see the picture here. Something went wrong..."/>
                 </>
@@ -72,39 +78,36 @@ class Letters extends Component {
             points: 0,
             inputIsShown: false,
             solution: "",
-            solve: false
+            solve: false,
+            infoAboutSolution: "",
+            h1IsShown: false,
+            buttonIsShown: true,
+            continueIsShown: false
         }
     }
 
     componentDidMount() {
+        const buttonGuess = document.getElementById('guess');
+        const solution = document.getElementById('solution');
+        const refresh = document.getElementById('refresh');
         document.addEventListener('keyup', (event) => {
             if (event.keyCode >= 65 && event.keyCode < 91 && this.state.solve === false) {
                 console.log("Key:", event.key);
                 this.setState({letter: event.key});
                 this.submitLetter(event);
-                // this.solveTheTag(event);
-                // this.checkSolution(event);
             }
         });
-        document.addEventListener('submit', (event) => {
-            // document.removeEventListener('keyup', (event) => {
-            //     this.submitLetter(event);
-            // });
+        solution.addEventListener('click', (event) => {
             this.solveTheTag(event);
             this.checkSolution(event);
-        })
+        });
+        buttonGuess.addEventListener('click', (event) => {
+            this.guessLetters(event);
+        });
+        refresh.addEventListener('click', (event) => {
+            this.refreshStates(event);
+        });
     }
-
-    // componentDidUpdate() {
-    //     document.addEventListener('submit', (event) => {
-    //         this.solveTheTag(event);
-    //         this.checkSolution(event);
-    //     })
-    // }
-
-    // componentDidUpdate() {
-    //     console.log("letters update");
-    // }
 
     submitLetter = event => {
         console.log("Letters props: ", this.props);
@@ -145,7 +148,7 @@ class Letters extends Component {
                 line: allLinesToShow,
                 divIsShown: false
             })
-        }, 1500);
+        }, 1000);
         console.log(this.state.numberOfLettersToShow);
     };
 
@@ -157,27 +160,62 @@ class Letters extends Component {
     solveTheTag = event => {
         this.setState({
             inputIsShown: !this.state.inputIsShown,
-            solve: true,
+            buttonIsShown: false,
+            solve: true
         })
     };
 
     checkSolution = event => {
         event.preventDefault();
         if (this.state.solution === this.props.tag) {
-            this.state.solution = this.props.tag;
-            // for (let i = 0; i < this.props.tag.length; i++) {
-            //     this.props.tag[i] = this.state.solution[i];
-            // }
-            alert("ok");
+            this.setState({
+                line: this.state.solution,
+                h1IsShown: true,
+                infoAboutSolution: "You are right!!! The tag is correct!",
+                solve: false,
+                inputIsShown: false,
+                buttonIsShown: false,
+                continueIsShown: true
+            });
         } else {
-            alert("not ok");
+            this.setState({
+                h1IsShown: true,
+                infoAboutSolution: "You are wrong!!!",
+                solve: false,
+                inputIsShown: false,
+                buttonIsShown: false,
+                continueIsShown: true
+            });
         }
-        // for (let i = 0; this.state.checkSolution; i++) {
-        //     if (this.state.checkSolution.length === this.props.tag.length
-        //         && this.state.checkSolution[i] === this.props.tag[i]) {
-        //         console.log('Brawo');
-        //     }
-        // }
+    };
+
+    guessLetters = event => {
+        console.log('guessLetters', event);
+        event.preventDefault();
+        this.setState({
+            solve: false,
+            inputIsShown: false,
+            infoAboutSolution: "",
+            buttonIsShown: true
+        })
+    };
+
+    refreshStates = event => {
+        event.preventDefault();
+        this.setState({
+            infoAboutSolution: "",
+            buttonIsShown: true,
+            continueIsShown: false,
+            line: this.props.line,
+            image: this.state.image,
+            tag: this.state.tag,
+            isReady: this.state.isReady
+        })
+    };
+
+    stopGame = event => {
+        event.preventDefault();
+
     };
 
     render() {
@@ -186,15 +224,27 @@ class Letters extends Component {
                 <h1 className="spaces">{this.state.line}</h1>
                 <Points lettersToShow={this.state.numberOfLettersToShow} letter={this.state.letter}
                         points={this.state.points}/>
-                <button onClick={this.solveTheTag}>Solve the tag</button>
+                <button className={this.state.buttonIsShown ? "show" : "hide"} onClick={this.solveTheTag}>Solve the tag
+                </button>
+                <div className={this.state.h1IsShown ? "show" : "hide"}>
+                    <h1>{this.state.infoAboutSolution}</h1>
+                </div>
                 <form className={this.state.inputIsShown ? "show" : "hide"}>
                     <label> Provide your solution of this tag
-                        <input id="solve" type="text"
-                               onChange={this.provideLetter}/>
+                        <input id="solve" type="text" minLength="2" onChange={this.provideLetter}/>
                     </label>
-                    <input type="submit" value="Check my solution" onClick={this.state.checkSolution}/>
-                    <input type="submit" value="Hmm... guess letters"/>
+                    <input id="solution" type="submit" value="Check my solution" onClick={this.state.checkSolution}/>
+                    <button id="guess" onClick={this.state.guessLetters}>Guess letters</button>
                 </form>
+                <button id="refresh" className={this.state.continueIsShown ? "show" : "hide"}
+                        onClick={() => {
+                            this.props.refreshGame();
+                            this.refreshStates(event);
+                        }}>Continue the game
+                </button>
+                <button className={this.state.continueIsShown ? "show" : "hide"} onClick={this.stopGame}>Stop
+                    the game
+                </button>
                 <div id="message" className={this.state.divIsShown ? "show" : "hide"}>
                     <p>{this.state.infoMessage}</p>
                     <h1>{this.state.letter}</h1>
