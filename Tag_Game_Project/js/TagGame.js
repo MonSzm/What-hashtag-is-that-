@@ -1,18 +1,79 @@
 import React, {Component} from "react";
 import ReactDOM from "react-dom";
 
+class WelcomePage extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            isGameStarted: false
+        }
+    }
+
+    startGame = event => {
+        event.preventDefault();
+        this.setState({
+            isGameStarted: true
+        })
+    };
+
+    render() {
+        return (
+            <>
+                <div className={this.state.isGameStarted ? "hide" : "show"}>
+                    <h1>What hashtag is that?</h1>
+                    <p>As the name suggests this game is about hashtags. Try to guess the hashtag based on the picture.
+                        Provide letters and see if you are right.</p>
+                    <ul>The main rules:
+                        <li>Only three lifes to guess the hashtag</li>
+                        <li>Yes for Polish signs</li>
+                        <li>Be ahead and provide to input whole hashtag. But there is risk, there is fun!
+                            Good answer -> collect extra points
+                            Wrong answer -> loose extra points
+                        </li>
+                        <li>Use keyboard to provide letters</li>
+                    </ul>
+                    <div>Scoring rules
+                        <ul>Provide letters one by one:
+                            <li>Really good: one point for every correct letter</li>
+                            <li>Almost good: one negative point for wrong letter</li>
+                        </ul>
+                        <ul>Provide whole hashtag:
+                            <li>Really good: double point for all hidden letters</li>
+                            <li>Almost good: double negative point for all hidden letters</li>
+                        </ul>
+                    </div>
+                    <p>Remember... you will not cheat the system</p>
+                    <p>GOOD LUCK!</p>
+                    <button onClick={this.startGame}>Start the game
+                    </button>
+                </div>
+                <div className={this.state.isGameStarted ? "show" : "hide"}>
+                    <Picture/>
+                </div>
+            </>
+        )
+    }
+}
+
 class Picture extends Component {
     constructor(props) {
         super(props);
         this.state = {
             image: null,
-            // totalItems: null,
             tag: "",
             line: "",
             isReady: false,
+            isGameActive: true
         };
         this.refreshGame = this.refreshGame.bind(this);
+        this.stopGame = this.stopGame.bind(this);
     }
+
+    stopGame = () => {
+        this.setState({
+            isGameActive: false
+        })
+    };
 
     componentDidMount() {
         this.refreshGame();
@@ -37,6 +98,7 @@ class Picture extends Component {
                 for (let i = 0; i < theLongestTag.length; i++) {
                     line += theLongestTag[i] === " " ? "\u00a0" : "_";
                 }
+                console.log('lines:', line);
                 this.setState({
                     line: line,
                     tag: theLongestTag,
@@ -54,13 +116,14 @@ class Picture extends Component {
             return <h1>Hmm... Give me a second please</h1>
         } else {
             return (
-                <>
+                <div className={this.state.isGameActive ? "show" : "hide"}>
                     <h2 style={{backgroundColor: "pink"}}>{this.state.tag}</h2>
-                    <Letters tag={this.state.tag} line={this.state.line} refreshGame={this.refreshGame}
-                             image={this.state.image} isReady={this.state.isReady}/>
+                    <Letters onClick={this.stopGame} tag={this.state.tag} line={this.state.line}
+                             refreshGame={this.refreshGame} image={this.state.image}
+                             isReady={this.state.isReady} game={this.state.isGameActive}/>
                     <img src={this.state.image}
                          alt="Oh... You should see the picture here. Something went wrong..."/>
-                </>
+                </div>
             )
         }
     }
@@ -82,7 +145,10 @@ class Letters extends Component {
             infoAboutSolution: "",
             h1IsShown: false,
             buttonIsShown: true,
-            continueIsShown: false
+            continueIsShown: false,
+            stop: false,
+            totalLettersToShow: 0,
+            clickedLetters: ""
         }
     }
 
@@ -113,25 +179,31 @@ class Letters extends Component {
         console.log("Letters props: ", this.props);
         event.preventDefault();
         console.log('The letter "' + this.state.letter + '" has been provided');
-        //let letterWasFound = false;
         let arrayWithLinesToShow = [];
-        console.log(this.props.tag.length);
         for (let i = 0; i < this.props.tag.length; i++) {
             if (this.props.tag[i] === this.state.letter) {
-                //letterWasFound = true;
                 arrayWithLinesToShow.push(i);
                 console.log("Great! This tag concerns letter " + this.state.letter);
             }
         }
+        this.setState({
+            clickedLetters: this.state.clickedLetters + this.state.letter
+        });
+        console.log('Provided letters: ', this.state.clickedLetters);
+        console.log('check letter: ', this.state.clickedLetters.indexOf(this.state.letter));
+        this.setState({
+            totalLettersToShow: this.state.totalLettersToShow + arrayWithLinesToShow.length
+        });
         console.log(arrayWithLinesToShow);
-        if (arrayWithLinesToShow.length > 0) {
+        console.log('Total letters to show:', this.state.totalLettersToShow);
+        if (arrayWithLinesToShow.length > 0 && this.state.clickedLetters.indexOf(this.state.letter) === -1) {
             this.setState({
                 infoMessage: "Great! You are right!",
                 divIsShown: true,
                 numberOfLettersToShow: arrayWithLinesToShow,
                 points: this.state.points + arrayWithLinesToShow.length
             })
-        } else {
+        } else if (arrayWithLinesToShow.length === 0) {
             this.setState({
                 infoMessage: "Ups! Try again!",
                 divIsShown: true,
@@ -167,24 +239,42 @@ class Letters extends Component {
 
     checkSolution = event => {
         event.preventDefault();
+        let counter = 0;
+        for (let i = 0; i < this.props.tag.length; i++) {
+            if (this.props.tag[i] === " ") {
+                counter++;
+            }
+        }
         if (this.state.solution === this.props.tag) {
             this.setState({
-                line: this.state.solution,
+                line: this.props.tag,
                 h1IsShown: true,
-                infoAboutSolution: "You are right!!! The tag is correct!",
+                infoAboutSolution: "Jeah! You are right! The hashtag is correct! +" + ((this.props.tag.length - this.state.totalLettersToShow - counter) * 2) + " point(s)",
                 solve: false,
                 inputIsShown: false,
                 buttonIsShown: false,
-                continueIsShown: true
+                continueIsShown: true,
+                points: this.state.points + ((this.props.tag.length - this.state.totalLettersToShow - counter) * 2)
             });
         } else {
+            let negativePoints = (this.props.tag.length - this.state.totalLettersToShow - counter) * 2;
+            if ((this.state.points - negativePoints) < 0) {
+                this.setState({
+                    infoAboutSolution: "Ups... You are wrong! The correct hashtag: " + this.props.tag.toUpperCase() + " You lost all points"
+                })
+            } else {
+                this.setState({
+                    infoAboutSolution: "Ups... You are wrong! The correct hashtag: " + this.props.tag.toUpperCase() + "-" + negativePoints + "point(s)",
+                });
+            }
             this.setState({
                 h1IsShown: true,
-                infoAboutSolution: "You are wrong!!!",
+                line: this.props.tag,
                 solve: false,
                 inputIsShown: false,
                 buttonIsShown: false,
-                continueIsShown: true
+                continueIsShown: true,
+                points: (this.state.points - (negativePoints) > 0 ? (this.state.points - (negativePoints)) : 0)
             });
         }
     };
@@ -207,23 +297,27 @@ class Letters extends Component {
             buttonIsShown: true,
             continueIsShown: false,
             line: this.props.line,
-            image: this.state.image,
-            tag: this.state.tag,
-            isReady: this.state.isReady
+            // image: this.state.image,
+            // tag: this.state.tag,
+            // isReady: this.state.isReady
         })
     };
 
-    stopGame = event => {
-        event.preventDefault();
-
-    };
+    // stopGame = event => {
+    //     event.preventDefault();
+    //     this.setState({
+    //         stop: true,
+    //         game: false
+    //     });
+    // };
 
     render() {
+        console.log(this.props);
+        const {onClick} = this.props;
         return (
             <>
                 <h1 className="spaces">{this.state.line}</h1>
-                <Points lettersToShow={this.state.numberOfLettersToShow} letter={this.state.letter}
-                        points={this.state.points}/>
+                <h4>Your points: {this.state.points}</h4>
                 <button className={this.state.buttonIsShown ? "show" : "hide"} onClick={this.solveTheTag}>Solve the tag
                 </button>
                 <div className={this.state.h1IsShown ? "show" : "hide"}>
@@ -239,12 +333,13 @@ class Letters extends Component {
                 <button id="refresh" className={this.state.continueIsShown ? "show" : "hide"}
                         onClick={() => {
                             this.props.refreshGame();
-                            this.refreshStates(event);
+                            // this.refreshStates(event);
                         }}>Continue the game
                 </button>
-                <button className={this.state.continueIsShown ? "show" : "hide"} onClick={this.stopGame}>Stop
-                    the game
+                <button className={this.state.continueIsShown ? "show" : "hide"}
+                        onClick={onClick}>Stop the game
                 </button>
+                {this.state.stop && <Stop/>}
                 <div id="message" className={this.state.divIsShown ? "show" : "hide"}>
                     <p>{this.state.infoMessage}</p>
                     <h1>{this.state.letter}</h1>
@@ -255,19 +350,18 @@ class Letters extends Component {
     }
 }
 
-class Points extends Component {
+class Stop extends Component {
     constructor(props) {
-        console.log("Points constructor");
         super(props);
-        this.state = {
-            points: 0
-        }
-    }
+        this.state = {}
+    };
 
     render() {
         return (
             <>
-                <h4>Your points: {this.props.points}</h4>
+                <p>Hope that it was nice time for you and you like this hashtag game.</p>
+                <p>Your points: {this.props.points}</p>
+                <p>See you!!!</p>
             </>
         )
     }
@@ -276,10 +370,9 @@ class Points extends Component {
 class App
     extends Component {
     render() {
-        console.log("dziala");
         return (
             <>
-                <Picture/>
+                <WelcomePage/>
             </>
         )
     }
