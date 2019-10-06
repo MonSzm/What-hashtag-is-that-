@@ -1,5 +1,30 @@
+@font-face {
+    font-family: 'mansalvaregular';
+    src: url(../Fonts/mansalva-regular-webfont.woff2) format('woff2'),
+    url(../Fonts/mansalva-regular-webfont.woff) format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'underdogregular';
+    src: url(../Fonts/underdog/underdog-regular-webfont.woff2) format('woff2'),
+    url(../Fonts/underdog/underdog-regular-webfont.woff) format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+* {
+    font-family: 'underdogregular', cursive;
+}
+
+.app {
+    display: inline-block;
+}
+
 .show {
-    display: block;
+    display: inline-block;
 }
 
 .hide {
@@ -8,4 +33,97 @@
 
 .spaces {
     letter-spacing: 0.5em;
+}
+
+.picture {
+    text-align: center;
+}
+
+#picture {
+    text-align: center;
+}
+
+.welcomePage {
+    text-align: center;
+    font-size: 3em;
+}
+
+.center {
+    text-align: center;
+}
+
+.rules {
+    margin-left: 3em;
+    display: flex;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+#welcomePage {
+    display: block;
+    font-size: 18px;
+}
+
+.score {
+    display: flex;
+    margin-top: 5%;
+}
+
+.point {
+    width: 15%;
+    /*text-align: center;*/
+}
+
+.points {
+
+}
+
+.goodLuck {
+    /*margin-right: 3%;*/
+    font-size: 1.5em;
+    width: 15%;
+    text-align: center;
+}
+
+.startGame {
+    box-shadow: 17px 17px 17px -4px #276873;
+    background: linear-gradient(to bottom, #599bb3 5%, #408c99 100%);
+    background-color: #599bb3;
+    border-radius: 18px;
+    display: inline-block;
+    cursor: pointer;
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 13px 30px;
+    text-decoration: none;
+    text-shadow: 12px 11px 3px #3d768a;
+    margin-left: 80%;
+}
+
+.startGame:hover {
+    background: linear-gradient(to bottom, #408c99 5%, #599bb3 100%);
+    background-color: #408c99;
+}
+
+.startGame:active {
+    position: relative;
+    top: 1px;
+}
+
+.description {
+    width: 40%;
+    margin-right: 3%;
+}
+
+.info {
+    margin: 5% 0 0 10%;
+    width: 70%;
+}
+
+.information {
+    display: flex;
+    margin-top: 4%;
 }

@@ -20,31 +20,47 @@ class WelcomePage extends Component {
         return (
             <>
                 <div className={this.state.isGameStarted ? "hide" : "show"}>
-                    <h1>What hashtag is that?</h1>
-                    <p>As the name suggests this game is about hashtags. Try to guess the hashtag based on the picture.
-                        Provide letters and see if you are right.</p>
-                    <ul>The main rules:
-                        <li>Only three lifes to guess the hashtag</li>
-                        <li>Yes for Polish signs</li>
-                        <li>Be ahead and provide to input whole hashtag. But there is risk, there is fun!
-                            Good answer -> collect extra points
-                            Wrong answer -> loose extra points
-                        </li>
-                        <li>Use keyboard to provide letters</li>
-                    </ul>
-                    <div>Scoring rules
-                        <ul>Provide letters one by one:
-                            <li>Really good: one point for every correct letter</li>
-                            <li>Almost good: one negative point for wrong letter</li>
+                    <h1 className="welcomePage">What hashtag is that?</h1>
+                    <div className="rules">
+                        <p className="description">As the name suggests this game is about hashtags. Try to guess the
+                            hashtag
+                            based on the picture.
+                            Provide letters and see if you are right.</p>
+                        <div><h3>THE MAIN RULES:</h3>
+                            <ul>
+                                <li>Only <span className="bold">three lifes</span> to guess the hashtag</li>
+                                <li>Yes for <span className="bold">Polish signs</span></li>
+                                <li>Use input to provide whole hashtag. But there is risk, there is fun!
+                                    <ul>
+                                        <li><span className="bold">Good answer</span> -> <span
+                                            className="bold">collect</span> extra points
+                                        </li>
+                                        <li><span className="bold">Wrong answer</span> -> <span
+                                            className="bold">loose</span> extra points
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>Use keyboard to provide letters</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div className="score">
+                        <h3 className="point">SCORING RULES:</h3>
+                        <ul className="points">Provide letters <span className="bold">ONE BY ONE</span>:
+                            <li><span className="bold">Really good:</span> one point for every correct letter</li>
+                            <li><span className="bold">Almost good:</span> one negative point for wrong letter</li>
                         </ul>
-                        <ul>Provide whole hashtag:
-                            <li>Really good: double point for all hidden letters</li>
-                            <li>Almost good: double negative point for all hidden letters</li>
+                        <ul className="points">Provide <span className="bold">WHOLE HASHTAG</span>:
+                            <li><span className="bold">Really good:</span> double point for all hidden letters</li>
+                            <li><span className="bold">Almost good:</span> double negative point for all hidden letters
+                            </li>
                         </ul>
                     </div>
-                    <p>Remember... you will not cheat the system</p>
-                    <p>GOOD LUCK!</p>
-                    <button onClick={this.startGame}>Start the game
+                    <div className="information">
+                        <h2 className="info">Remember... you will not cheat the system.</h2>
+                        <h2 className="goodLuck">GOOD LUCK!</h2>
+                    </div>
+                    <button className="startGame" onClick={this.startGame}>Start the game
                     </button>
                 </div>
                 <div className={this.state.isGameStarted ? "show" : "hide"}>
@@ -63,7 +79,8 @@ class Picture extends Component {
             tag: "",
             line: "",
             isReady: false,
-            isGameActive: true
+            isGameActive: true,
+            isGameStopped: false
         };
         this.refreshGame = this.refreshGame.bind(this);
         this.stopGame = this.stopGame.bind(this);
@@ -95,13 +112,17 @@ class Picture extends Component {
                 const theLongestTag = arrayWithTags[arrayWithTags.length - 1];
                 console.log("Longest:", theLongestTag);
                 let line = "";
-                for (let i = 0; i < theLongestTag.length; i++) {
-                    line += theLongestTag[i] === " " ? "\u00a0" : "_";
+                const lowerCase = theLongestTag.toLowerCase();
+                const letters = "abcdefghijklmnopqrstuwvxyząćęłńóźż ";
+                for (let i = 0; i < lowerCase.length; i++) {
+                    if (letters.indexOf(lowerCase[i]) >= 0) {
+                        line += lowerCase[i] === " " ? "\u00a0" : "_";
+                    }
                 }
                 console.log('lines:', line);
                 this.setState({
                     line: line,
-                    tag: theLongestTag,
+                    tag: lowerCase,
                     image: data.hits[randomNumber].webformatURL,
                     isReady: true
                 })
@@ -116,13 +137,19 @@ class Picture extends Component {
             return <h1>Hmm... Give me a second please</h1>
         } else {
             return (
-                <div className={this.state.isGameActive ? "show" : "hide"}>
-                    <h2 style={{backgroundColor: "pink"}}>{this.state.tag}</h2>
-                    <Letters onClick={this.stopGame} tag={this.state.tag} line={this.state.line}
-                             refreshGame={this.refreshGame} image={this.state.image}
-                             isReady={this.state.isReady} game={this.state.isGameActive}/>
-                    <img src={this.state.image}
-                         alt="Oh... You should see the picture here. Something went wrong..."/>
+                <div>
+                    <div className={this.state.isGameActive ? "show" : "hide"}>
+                        <h2 style={{backgroundColor: "pink"}}>{this.state.tag}</h2>
+                        <Letters onClick={this.stopGame} tag={this.state.tag} line={this.state.line}
+                                 refreshGame={this.refreshGame} image={this.state.image}
+                                 isReady={this.state.isReady} game={this.state.isGameActive}
+                                 stop={this.state.isGameStopped}/>
+                        <img src={this.state.image}
+                             alt="Oh... You should see the picture here. Something went wrong..."/>
+                    </div>
+                    <div className={this.state.isGameStopped ? "show" : "hide"}>
+                        <Stop/>
+                    </div>
                 </div>
             )
         }
@@ -152,10 +179,17 @@ class Letters extends Component {
         }
     }
 
+    static getDerivedStateFromProps(props, state) {
+        if (props.line !== state.line) {
+            return {line: props.line}
+        }
+    }
+
     componentDidMount() {
         const buttonGuess = document.getElementById('guess');
         const solution = document.getElementById('solution');
         const refresh = document.getElementById('refresh');
+        const stop = document.getElementById('stop');
         document.addEventListener('keyup', (event) => {
             if (event.keyCode >= 65 && event.keyCode < 91 && this.state.solve === false) {
                 console.log("Key:", event.key);
@@ -186,11 +220,9 @@ class Letters extends Component {
                 console.log("Great! This tag concerns letter " + this.state.letter);
             }
         }
-        this.setState({
-            clickedLetters: this.state.clickedLetters + this.state.letter
-        });
+
         console.log('Provided letters: ', this.state.clickedLetters);
-        console.log('check letter: ', this.state.clickedLetters.indexOf(this.state.letter));
+        console.log('Check letter: ', this.state.clickedLetters.indexOf(this.state.letter));
         this.setState({
             totalLettersToShow: this.state.totalLettersToShow + arrayWithLinesToShow.length
         });
@@ -203,16 +235,27 @@ class Letters extends Component {
                 numberOfLettersToShow: arrayWithLinesToShow,
                 points: this.state.points + arrayWithLinesToShow.length
             })
-        } else if (arrayWithLinesToShow.length === 0) {
+        } else if (arrayWithLinesToShow.length === 0 && this.state.clickedLetters.indexOf(this.state.letter) === -1) {
             this.setState({
                 infoMessage: "Ups! Try again!",
                 divIsShown: true,
                 points: this.state.points > 0 ? this.state.points - 1 : this.state.points
             })
+        } else if (arrayWithLinesToShow.length > 0 && this.state.clickedLetters.indexOf(this.state.letter) >= 0) {
+            this.setState({
+                infoMessage: "Really?! Do you not remember? This letter has been already provided!",
+                divIsShown: true,
+                points: this.state.points
+            })
+        } else {
+            this.setState({
+                infoMessage: "Really?! Do you not remember? This letter has been already provided!",
+                divIsShown: true,
+                points: this.state.points
+            })
         }
         setTimeout(() => {
             let allLinesToShow = "";
-            console.log("submit letter:", this.props.tag, this.state.letter);
             for (let i = 0; i < this.props.tag.length; i++) {
                 allLinesToShow += this.props.tag[i] === this.state.letter ? this.state.letter : this.state.line[i];
             }
@@ -222,6 +265,10 @@ class Letters extends Component {
             })
         }, 1000);
         console.log(this.state.numberOfLettersToShow);
+
+        this.setState({
+            clickedLetters: this.state.clickedLetters + this.state.letter
+        });
     };
 
     provideLetter = event => {
@@ -249,7 +296,7 @@ class Letters extends Component {
             this.setState({
                 line: this.props.tag,
                 h1IsShown: true,
-                infoAboutSolution: "Jeah! You are right! The hashtag is correct! +" + ((this.props.tag.length - this.state.totalLettersToShow - counter) * 2) + " point(s)",
+                infoAboutSolution: "Yeah! You are right! +" + ((this.props.tag.length - this.state.totalLettersToShow - counter) * 2) + " point(s)",
                 solve: false,
                 inputIsShown: false,
                 buttonIsShown: false,
@@ -290,6 +337,7 @@ class Letters extends Component {
         })
     };
 
+
     refreshStates = event => {
         event.preventDefault();
         this.setState({
@@ -303,22 +351,21 @@ class Letters extends Component {
         })
     };
 
-    // stopGame = event => {
-    //     event.preventDefault();
-    //     this.setState({
-    //         stop: true,
-    //         game: false
-    //     });
-    // };
+    stopGame = event => {
+        event.preventDefault();
+        this.setState({
+            stop: true,
+            game: false
+        });
+    };
 
     render() {
-        console.log(this.props);
-        const {onClick} = this.props;
         return (
             <>
                 <h1 className="spaces">{this.state.line}</h1>
                 <h4>Your points: {this.state.points}</h4>
-                <button className={this.state.buttonIsShown ? "show" : "hide"} onClick={this.solveTheTag}>Solve the tag
+                <button className={this.state.buttonIsShown ? "show" : "hide"} onClick={this.solveTheTag}>Solve the
+                    tag
                 </button>
                 <div className={this.state.h1IsShown ? "show" : "hide"}>
                     <h1>{this.state.infoAboutSolution}</h1>
@@ -327,17 +374,15 @@ class Letters extends Component {
                     <label> Provide your solution of this tag
                         <input id="solve" type="text" minLength="2" onChange={this.provideLetter}/>
                     </label>
-                    <input id="solution" type="submit" value="Check my solution" onClick={this.state.checkSolution}/>
+                    <input id="solution" type="submit" value="Check my solution"
+                           onClick={this.state.checkSolution}/>
                     <button id="guess" onClick={this.state.guessLetters}>Guess letters</button>
                 </form>
                 <button id="refresh" className={this.state.continueIsShown ? "show" : "hide"}
-                        onClick={() => {
-                            this.props.refreshGame();
-                            // this.refreshStates(event);
-                        }}>Continue the game
+                        onClick={this.props.refreshGame}>Continue the game
                 </button>
-                <button className={this.state.continueIsShown ? "show" : "hide"}
-                        onClick={onClick}>Stop the game
+                <button id="stop" className={this.state.continueIsShown ? "show" : "hide"}
+                        onClick={this.stopGame}>Stop the game
                 </button>
                 {this.state.stop && <Stop/>}
                 <div id="message" className={this.state.divIsShown ? "show" : "hide"}>
@@ -350,7 +395,8 @@ class Letters extends Component {
     }
 }
 
-class Stop extends Component {
+class Stop
+    extends Component {
     constructor(props) {
         super(props);
         this.state = {}
