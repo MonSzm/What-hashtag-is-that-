@@ -1,71 +1,62 @@
 import React, {Component} from "react";
 import ReactDOM from "react-dom";
+import {HashRouter, Route, withRouter} from 'react-router-dom';
 
 class WelcomePage extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            isGameStarted: false
-        }
     }
 
     startGame = event => {
         event.preventDefault();
-        this.setState({
-            isGameStarted: true
-        })
+        this.props.history.push('/game');
     };
 
     render() {
         return (
             <>
-                <div className={this.state.isGameStarted ? "hide" : "show"}>
-                    <h1 className="welcomePage">What hashtag is that?</h1>
-                    <div className="rules">
-                        <p className="description">As the name suggests this game is about hashtags. Try to guess the
-                            hashtag
-                            based on the picture.
-                            Provide letters and see if you are right.</p>
-                        <div><h3>THE MAIN RULES:</h3>
-                            <ul>
-                                <li>Only <span className="bold">three lifes</span> to guess the hashtag</li>
-                                <li>Yes for <span className="bold">Polish signs</span></li>
-                                <li>Use input to provide whole hashtag. But there is risk, there is fun!
-                                    <ul>
-                                        <li><span className="bold">Good answer</span> -> <span
-                                            className="bold">collect</span> extra points
-                                        </li>
-                                        <li><span className="bold">Wrong answer</span> -> <span
-                                            className="bold">loose</span> extra points
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li>Use keyboard to provide letters</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div className="score">
-                        <h3 className="point">SCORING RULES:</h3>
-                        <ul className="points">Provide letters <span className="bold">ONE BY ONE</span>:
-                            <li><span className="bold">Really good:</span> one point for every correct letter</li>
-                            <li><span className="bold">Almost good:</span> one negative point for wrong letter</li>
-                        </ul>
-                        <ul className="points">Provide <span className="bold">WHOLE HASHTAG</span>:
-                            <li><span className="bold">Really good:</span> double point for all hidden letters</li>
-                            <li><span className="bold">Almost good:</span> double negative point for all hidden letters
+                <h1 className="welcomePage">What hashtag is that?</h1>
+                <div className="rules">
+                    <p className="description">As the name suggests this game is about hashtags. Try to guess the
+                        hashtag
+                        based on the picture.
+                        Provide letters and see if you are right.</p>
+                    <div><h3>THE MAIN RULES:</h3>
+                        <ul>
+                            <li>Only <span className="bold">three lifes</span> to guess the hashtag</li>
+                            <li>Yes for <span className="bold">Polish signs</span></li>
+                            <li>Use input to provide whole hashtag. But there is risk, there is fun!
+                                <ul>
+                                    <li><span className="bold">Good answer</span> -> <span
+                                        className="bold">collect</span> extra points
+                                    </li>
+                                    <li><span className="bold">Wrong answer</span> -> <span
+                                        className="bold">loose</span> extra points
+                                    </li>
+                                </ul>
                             </li>
+                            <li>Use keyboard to provide letters</li>
                         </ul>
                     </div>
-                    <div className="information">
-                        <h2 className="info">Remember... you will not cheat the system.</h2>
-                        <h2 className="goodLuck">GOOD LUCK!</h2>
-                    </div>
-                    <button className="startGame" onClick={this.startGame}>Start the game
-                    </button>
                 </div>
-                <div className={this.state.isGameStarted ? "show" : "hide"}>
-                    <Picture/>
+                <div className="score">
+                    <h3 className="point">SCORING RULES:</h3>
+                    <ul className="points">Provide letters <span className="bold">ONE BY ONE</span>:
+                        <li><span className="bold">Really good:</span> one point for every correct letter</li>
+                        <li><span className="bold">Almost good:</span> one negative point for wrong letter</li>
+                    </ul>
+                    <ul className="points">Provide <span className="bold">WHOLE HASHTAG</span>:
+                        <li><span className="bold">Really good:</span> double point for all hidden letters</li>
+                        <li><span className="bold">Almost good:</span> double negative point for all hidden letters
+                        </li>
+                    </ul>
                 </div>
+                <div className="information">
+                    <h2 className="info">Remember... you will not cheat the system.</h2>
+                    <h2 className="goodLuck">GOOD LUCK!</h2>
+                </div>
+                <button className="startGame" onClick={this.startGame}>Start the game
+                </button>
             </>
         )
     }
@@ -89,7 +80,8 @@ class Picture extends Component {
     stopGame = () => {
         this.setState({
             isGameActive: false
-        })
+        });
+        this.props.history.push('/stop');
     };
 
     componentDidMount() {
@@ -113,7 +105,7 @@ class Picture extends Component {
                 console.log("Longest:", theLongestTag);
                 let line = "";
                 const lowerCase = theLongestTag.toLowerCase();
-                const letters = "abcdefghijklmnopqrstuwvxyząćęłńóźż ";
+                const letters = "abcdefghijklmnopqrstuwvxyząćęłńóśźż ";
                 for (let i = 0; i < lowerCase.length; i++) {
                     if (letters.indexOf(lowerCase[i]) >= 0) {
                         line += lowerCase[i] === " " ? "\u00a0" : "_";
@@ -140,7 +132,7 @@ class Picture extends Component {
                 <div>
                     <div className={this.state.isGameActive ? "show" : "hide"}>
                         <h2 style={{backgroundColor: "pink"}}>{this.state.tag}</h2>
-                        <Letters onClick={this.stopGame} tag={this.state.tag} line={this.state.line}
+                        <Letters stopGame={this.stopGame} tag={this.state.tag} line={this.state.line}
                                  refreshGame={this.refreshGame} image={this.state.image}
                                  isReady={this.state.isReady} game={this.state.isGameActive}
                                  stop={this.state.isGameStopped}/>
@@ -175,14 +167,21 @@ class Letters extends Component {
             continueIsShown: false,
             stop: false,
             totalLettersToShow: 0,
-            clickedLetters: ""
+            clickedLetters: "",
+            shouldRefresh: false
         }
     }
 
     static getDerivedStateFromProps(props, state) {
-        if (props.line !== state.line) {
-            return {line: props.line}
+        if (state.shouldRefresh === true && props.line !== state.line) {
+            return {
+                line: props.line,
+                shouldRefresh: false,
+                totalLettersToShow: 0,
+                clickedLetters: ""
+            }
         }
+        return null;
     }
 
     componentDidMount() {
@@ -276,7 +275,7 @@ class Letters extends Component {
         this.setState({solution: event.target.value});
     };
 
-    solveTheTag = event => {
+    solveTheTag = () => {
         this.setState({
             inputIsShown: !this.state.inputIsShown,
             buttonIsShown: false,
@@ -337,7 +336,6 @@ class Letters extends Component {
         })
     };
 
-
     refreshStates = event => {
         event.preventDefault();
         this.setState({
@@ -345,14 +343,11 @@ class Letters extends Component {
             buttonIsShown: true,
             continueIsShown: false,
             line: this.props.line,
-            // image: this.state.image,
-            // tag: this.state.tag,
-            // isReady: this.state.isReady
+            shouldRefresh: true
         })
     };
 
-    stopGame = event => {
-        event.preventDefault();
+    stopGame = () => {
         this.setState({
             stop: true,
             game: false
@@ -382,9 +377,11 @@ class Letters extends Component {
                         onClick={this.props.refreshGame}>Continue the game
                 </button>
                 <button id="stop" className={this.state.continueIsShown ? "show" : "hide"}
-                        onClick={this.stopGame}>Stop the game
+                        onClick={() => {
+                            this.stopGame();
+                            this.props.stopGame()
+                        }}>Stop the game
                 </button>
-                {this.state.stop && <Stop/>}
                 <div id="message" className={this.state.divIsShown ? "show" : "hide"}>
                     <p>{this.state.infoMessage}</p>
                     <h1>{this.state.letter}</h1>
@@ -402,12 +399,18 @@ class Stop
         this.state = {}
     };
 
+    startAgain = event => {
+        event.preventDefault();
+        this.props.history.push('/');
+    };
+
     render() {
         return (
             <>
                 <p>Hope that it was nice time for you and you like this hashtag game.</p>
                 <p>Your points: {this.props.points}</p>
                 <p>See you!!!</p>
+                <button onClick={this.startAgain}>Start the game again</button>
             </>
         )
     }
@@ -417,9 +420,13 @@ class App
     extends Component {
     render() {
         return (
-            <>
-                <WelcomePage/>
-            </>
+            <HashRouter>
+                <>
+                    <Route exact path='/' component={withRouter(WelcomePage)}/>
+                    <Route path='/game' component={withRouter(Picture)}/>
+                    <Route path='/stop' component={withRouter(Stop)}/>
+                </>
+            </HashRouter>
         )
     }
 }
