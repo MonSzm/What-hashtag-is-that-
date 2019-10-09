@@ -133,14 +133,33 @@ class Picture extends Component {
             return (
                 <div id="picture">
                     <div className={this.state.isGameActive ? "show" : "hide"}>
-                        <Letters stopGame={this.stopGame} tag={this.state.tag} line={this.state.line}
-                                 refreshGame={this.refreshGame} image={this.state.image}
-                                 isReady={this.state.isReady} game={this.state.isGameActive}
-                                 stop={this.state.isGameStopped}/>
-                        {(!this.state.imgIsReady) ? <p>Hmm... Give me a second please</p> :
-                            <div id="image"><img className="img" src={this.state.image}
-                                                 alt="Oh... You should see the picture here. Something went wrong..."/>
-                            </div>}
+                        <div id="frame">
+                            <div id="photo"></div>
+                            <p id="nick">Really_nice_IT_girl</p>
+                            <p id="profession">Trying to be a good front-end developer</p>
+                            <p id="dots">...</p>
+                            {(!this.state.imgIsReady) ? <p>Hmm... Give me a second please</p> :
+                                <div id="image"><img className="img" src={this.state.image}
+                                                     alt="Oh... You should see the picture here. Something went wrong..."/>
+                                </div>}
+                            <Letters stopGame={this.stopGame} tag={this.state.tag} line={this.state.line}
+                                     refreshGame={this.refreshGame} image={this.state.image}
+                                     isReady={this.state.isReady} game={this.state.isGameActive}
+                                     stop={this.state.isGameStopped}/>
+                            <div id="symbols">
+                                <img className="symbol" src="../css/red_heart.png" alt="Likes"/>
+                                <img className="symbol" src="../css/comment.png" alt="Comment option"/>
+                                <img className="symbol" src="../css/share.png" alt="Share option"/>
+                                <img className="symbol flag" src="../css/flag.png" alt="Flag"/>
+                            </div>
+                            <div id="info">
+                                <p className="views">13.674 views</p>
+                                <p id="name">Really_nice_IT_girl <span id="hashtags"> #whathashtagisthat #tryingtobedeveloper #frontend #JavaScript #React #ITgirl
+                                        #womanspower #hardwork #magicweekendswithIT</span></p>
+                                <p id="view">View all 131 comments</p>
+                                <p id="when">3 DAYS AGO</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             )
@@ -357,18 +376,13 @@ class Letters extends Component {
     render() {
         return (
             <>
-                <div id="frame">
-                    <div id="photo"></div>
-                    <p id="nick">Really_nice_IT_girl</p>
-                    <p id="profession">Trying to be a good front-end developer</p>
-                    <p id="dots">...</p>
+                <div id="lines">
+                    <h1 className="spaces">{this.state.line}</h1>
+                    <h4>Your points: {this.state.points}</h4>
+                    <button className={this.state.buttonIsShown ? "show" : "hide"} onClick={this.solveTheTag}>Solve the
+                        tag
+                    </button>
                 </div>
-
-                <h1 className="spaces">{this.state.line}</h1>
-                <h4>Your points: {this.state.points}</h4>
-                <button className={this.state.buttonIsShown ? "show" : "hide"} onClick={this.solveTheTag}>Solve the
-                    tag
-                </button>
                 <div className={this.state.h1IsShown ? "show" : "hide"}>
                     <h1>{this.state.infoAboutSolution}</h1>
                 </div>

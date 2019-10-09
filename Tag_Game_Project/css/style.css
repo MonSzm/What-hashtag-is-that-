@@ -33,8 +33,8 @@
 }
 
 #picture {
-    text-align: center;
-    margin-top: -1em;
+    /*text-align: center;*/
+    margin-left: 5%;
 }
 
 #welcome {
@@ -67,7 +67,6 @@
 
 .score {
     display: flex;
-    margin-top: 5%;
 }
 
 .point {
@@ -118,13 +117,11 @@
 }
 
 .info {
-    margin: 5% 0 0 10%;
     width: 70%;
 }
 
 .information {
     display: flex;
-    margin-top: 4%;
 }
 
 #startGame {
@@ -139,9 +136,9 @@
     width: 40em;
     background-color: white;
     z-index: 2;
-    padding-bottom: 34em;
     border: 2px solid grey;
     /*position: relative;*/
+    margin-top: -3%;
 }
 
 #photo {
@@ -149,18 +146,16 @@
     background-size: cover;
     border-radius: 50%;
     z-index: 3;
-    width: 5em;
-    height: 5em;
-    /*padding: 6%;*/
-    /*position: relative;*/
+    width: 4em;
+    height: 4em;
+    margin: 2% 5%;
 }
 
 #nick {
     text-align: justify;
     padding-left: 20%;
     font-weight: bold;
-    margin-top: -6%;
-
+    margin-top: -9%;
 }
 
 #profession {
@@ -172,19 +167,78 @@
 #dots {
     font-size: 3em;
     color: gray;
-    margin: -10% 80%;
     width: 20%;
+    margin-top: -11%;
+    text-align: end;
+    margin-left: 72%;
 }
 
 #image {
     /*position: relative;*/
-    margin-top: -36em;
-    position: relative;
-    width: 80%;
-    /*justify-content: ;*/
 }
 
 .img {
-    position: relative;
+    /*position: relative;*/
+    /*width: 90%;*/
+    max-height: 24em;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: -2em;
+}
 
+#lines {
+    position: absolute;
+    margin-top: -35em;
+    margin-left: 45em;
+}
+
+#symbols {
+    background-color: white;
+    margin-top: 0.5em;
+    margin-left: 3em;
+}
+
+.symbol {
+    width: 1.75em;
+    height: 1.75em;
+    margin-left: 0.75em;
+    margin-right: 0.75em;
+}
+
+.flag {
+    margin-left: 22em;
+}
+
+#info {
+    margin-left: 2em;
+    margin-right: 2em;
+}
+
+#hashtags {
+    color: darkblue;
+    font-weight: normal;
+}
+
+#name {
+    font-weight: bold;
+    margin-top: -0.5em;
+    font-size: 1em;
+}
+
+.views {
+    margin-top: -0.1em;
+    color: dimgrey;
+}
+
+#view {
+    color: dimgrey;
+    font-size: 0.8em;
+    margin-top: -0.5em;
+}
+
+#when {
+    color: grey;
+    margin-top: -0.5em;
+    font-size: 0.75em;
 }
