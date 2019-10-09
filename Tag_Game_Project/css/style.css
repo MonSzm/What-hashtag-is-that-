@@ -1,22 +1,15 @@
 @font-face {
-    font-family: 'mansalvaregular';
-    src: url(../Fonts/mansalva-regular-webfont.woff2) format('woff2'),
-    url(../Fonts/mansalva-regular-webfont.woff) format('woff');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
     font-family: 'underdogregular';
     src: url(../Fonts/underdog/underdog-regular-webfont.woff2) format('woff2'),
     url(../Fonts/underdog/underdog-regular-webfont.woff) format('woff');
     font-weight: normal;
     font-style: normal;
-
 }
 
 * {
     font-family: 'underdogregular', cursive;
+    background-size: auto;
+
 }
 
 .app {
@@ -41,6 +34,12 @@
 
 #picture {
     text-align: center;
+    margin-top: -1em;
+}
+
+#welcome {
+    background-image: url("19366.jpg");
+    background-size: 100%;
 }
 
 .welcomePage {
@@ -126,4 +125,66 @@
 .information {
     display: flex;
     margin-top: 4%;
+}
+
+#startGame {
+    background-image: url("2868118.jpg");
+    background-size: cover;
+    padding: 2%;
+    z-index: 1;
+    /*position: absolute;*/
+}
+
+#frame {
+    width: 40em;
+    background-color: white;
+    z-index: 2;
+    padding-bottom: 34em;
+    border: 2px solid grey;
+    /*position: relative;*/
+}
+
+#photo {
+    background-image: url("photo.png");
+    background-size: cover;
+    border-radius: 50%;
+    z-index: 3;
+    width: 5em;
+    height: 5em;
+    /*padding: 6%;*/
+    /*position: relative;*/
+}
+
+#nick {
+    text-align: justify;
+    padding-left: 20%;
+    font-weight: bold;
+    margin-top: -6%;
+
+}
+
+#profession {
+    text-align: justify;
+    padding-left: 20%;
+    margin-top: -2%;
+}
+
+#dots {
+    font-size: 3em;
+    color: gray;
+    margin: -10% 80%;
+    width: 20%;
+}
+
+#image {
+    /*position: relative;*/
+    margin-top: -36em;
+    position: relative;
+    width: 80%;
+    /*justify-content: ;*/
+}
+
+.img {
+    position: relative;
+
 }

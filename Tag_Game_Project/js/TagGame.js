@@ -14,7 +14,7 @@ class WelcomePage extends Component {
 
     render() {
         return (
-            <>
+            <div>
                 <h1 className="welcomePage">What hashtag is that?</h1>
                 <div className="rules">
                     <p className="description">As the name suggests this game is about hashtags. Try to guess the
@@ -25,7 +25,7 @@ class WelcomePage extends Component {
                         <ul>
                             <li>Only <span className="bold">three lifes</span> to guess the hashtag</li>
                             <li>Yes for <span className="bold">Polish signs</span></li>
-                            <li>Use input to provide whole hashtag. But there is risk, there is fun!
+                            <li>Use input to provide whole hashtag. NO RISK, NO FUN!
                                 <ul>
                                     <li><span className="bold">Good answer</span> -> <span
                                         className="bold">collect</span> extra points
@@ -57,7 +57,7 @@ class WelcomePage extends Component {
                 </div>
                 <button className="startGame" onClick={this.startGame}>Start the game
                 </button>
-            </>
+            </div>
         )
     }
 }
@@ -71,7 +71,8 @@ class Picture extends Component {
             line: "",
             isReady: false,
             isGameActive: true,
-            isGameStopped: false
+            isGameStopped: false,
+            imgIsReady: false
         };
         this.refreshGame = this.refreshGame.bind(this);
         this.stopGame = this.stopGame.bind(this);
@@ -116,7 +117,8 @@ class Picture extends Component {
                     line: line,
                     tag: lowerCase,
                     image: data.hits[randomNumber].webformatURL,
-                    isReady: true
+                    isReady: true,
+                    imgIsReady: true
                 })
             }).catch(error => {
             console.log(error)
@@ -129,18 +131,16 @@ class Picture extends Component {
             return <h1>Hmm... Give me a second please</h1>
         } else {
             return (
-                <div>
+                <div id="picture">
                     <div className={this.state.isGameActive ? "show" : "hide"}>
-                        <h2 style={{backgroundColor: "pink"}}>{this.state.tag}</h2>
                         <Letters stopGame={this.stopGame} tag={this.state.tag} line={this.state.line}
                                  refreshGame={this.refreshGame} image={this.state.image}
                                  isReady={this.state.isReady} game={this.state.isGameActive}
                                  stop={this.state.isGameStopped}/>
-                        <img src={this.state.image}
-                             alt="Oh... You should see the picture here. Something went wrong..."/>
-                    </div>
-                    <div className={this.state.isGameStopped ? "show" : "hide"}>
-                        <Stop/>
+                        {(!this.state.imgIsReady) ? <p>Hmm... Give me a second please</p> :
+                            <div id="image"><img className="img" src={this.state.image}
+                                                 alt="Oh... You should see the picture here. Something went wrong..."/>
+                            </div>}
                     </div>
                 </div>
             )
@@ -357,6 +357,13 @@ class Letters extends Component {
     render() {
         return (
             <>
+                <div id="frame">
+                    <div id="photo"></div>
+                    <p id="nick">Really_nice_IT_girl</p>
+                    <p id="profession">Trying to be a good front-end developer</p>
+                    <p id="dots">...</p>
+                </div>
+
                 <h1 className="spaces">{this.state.line}</h1>
                 <h4>Your points: {this.state.points}</h4>
                 <button className={this.state.buttonIsShown ? "show" : "hide"} onClick={this.solveTheTag}>Solve the
@@ -374,7 +381,12 @@ class Letters extends Component {
                     <button id="guess" onClick={this.state.guessLetters}>Guess letters</button>
                 </form>
                 <button id="refresh" className={this.state.continueIsShown ? "show" : "hide"}
-                        onClick={this.props.refreshGame}>Continue the game
+                        onClick={() => {
+                            this.props.refreshGame();
+                            this.setState({
+                                imgIsReady: false
+                            })
+                        }}>Continue the game
                 </button>
                 <button id="stop" className={this.state.continueIsShown ? "show" : "hide"}
                         onClick={() => {
@@ -386,7 +398,6 @@ class Letters extends Component {
                     <p>{this.state.infoMessage}</p>
                     <h1>{this.state.letter}</h1>
                 </div>
-                <div>Letter provided: {this.state.letter}</div>
             </>
         )
     }
@@ -422,9 +433,9 @@ class App
         return (
             <HashRouter>
                 <>
-                    <Route exact path='/' component={withRouter(WelcomePage)}/>
-                    <Route path='/game' component={withRouter(Picture)}/>
-                    <Route path='/stop' component={withRouter(Stop)}/>
+                    <div id="welcome"><Route exact path='/' component={withRouter(WelcomePage)}/></div>
+                    <div id="startGame"><Route path='/game' component={withRouter(Picture)}/></div>
+                    <div id="finish"><Route path='/stop' component={withRouter(Stop)}/></div>
                 </>
             </HashRouter>
         )
