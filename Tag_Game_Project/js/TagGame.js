@@ -25,6 +25,7 @@ class WelcomePage extends Component {
                         <ul>
                             <li>Only <span className="bold">three lifes</span> to guess the hashtag</li>
                             <li>Yes for <span className="bold">Polish signs</span></li>
+                            <li>Yes for <span className="bold">Polish declension</span></li>
                             <li>Use input to provide whole hashtag. NO RISK, NO FUN!
                                 <ul>
                                     <li><span className="bold">Good answer</span> -> <span
@@ -157,7 +158,7 @@ class Picture extends Component {
                                 <p id="name">Really_nice_IT_girl <span id="hashtags"> #whathashtagisthat #tryingtobedeveloper #frontend #JavaScript #React #ITgirl
                                         #womanspower #hardwork #magicweekendswithIT</span></p>
                                 <p id="view">View all 131 comments</p>
-                                <p id="when">3 DAYS AGO</p>
+                                <p id="when">13 DAYS AGO</p>
                             </div>
                         </div>
                     </div>
