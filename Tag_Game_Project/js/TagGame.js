@@ -46,7 +46,7 @@ class WelcomePage extends Component {
                         <li><span className="bold">Really good:</span> one point for every correct letter</li>
                         <li><span className="bold">Almost good:</span> one negative point for wrong letter</li>
                     </ul>
-                    <ul className="points">Provide <span className="bold">WHOLE HASHTAG</span>:
+                    <ul className="points">Provide <span className="bold">WHOLE HASHTAG (without hashtag icon - it means "#")</span>:
                         <li><span className="bold">Really good:</span> double point for all hidden letters</li>
                         <li><span className="bold">Almost good:</span> double negative point for all hidden letters
                         </li>
@@ -110,7 +110,7 @@ class Picture extends Component {
                 const letters = "abcdefghijklmnopqrstuwvxyząćęłńóśźż ";
                 for (let i = 0; i < lowerCase.length; i++) {
                     if (letters.indexOf(lowerCase[i]) >= 0) {
-                        line += lowerCase[i] === " " ? "\u00a0" : "_";
+                        line += lowerCase[i] === " " ? " " : "_";
                     }
                 }
                 console.log('lines:', line);
@@ -326,11 +326,11 @@ class Letters extends Component {
             let negativePoints = (this.props.tag.length - this.state.totalLettersToShow - counter) * 2;
             if ((this.state.points - negativePoints) < 0) {
                 this.setState({
-                    infoAboutSolution: "Ups... You are wrong! The correct hashtag: " + this.props.tag.toUpperCase() + " You lost all points"
+                    infoAboutSolution: "Ups... You are wrong! You have lost all points!"
                 })
             } else {
                 this.setState({
-                    infoAboutSolution: "Ups... You are wrong! The correct hashtag: " + this.props.tag.toUpperCase() + "-" + negativePoints + "point(s)",
+                    infoAboutSolution: "Ups... You are wrong!" + negativePoints + "point(s)",
                 });
             }
             this.setState({
@@ -378,37 +378,42 @@ class Letters extends Component {
         return (
             <>
                 <div id="lines">
-                    <h1 className="spaces">{this.state.line}</h1>
-                    <h4>Your points: {this.state.points}</h4>
-                    <button className={this.state.buttonIsShown ? "show" : "hide"} onClick={this.solveTheTag}>Solve the
-                        tag
+                    <h1 className="tag"><span id="hashtagSymbol">#</span>{this.state.line}</h1>
+                    <h4 className="points">YOUR SCORE: <span id="totalPoints">{this.state.points} point(s)</span></h4>
+                    <button id="solveTag" className={this.state.buttonIsShown ? "show" : "hide"}
+                            onClick={this.solveTheTag}>Solve the tag
                     </button>
                 </div>
-                <div className={this.state.h1IsShown ? "show" : "hide"}>
-                    <h1>{this.state.infoAboutSolution}</h1>
+                <div id="infoAboutSolution" className={this.state.h1IsShown ? "show" : "hide"}>
+                    <h2>{this.state.infoAboutSolution}</h2>
                 </div>
-                <form className={this.state.inputIsShown ? "show" : "hide"}>
-                    <label> Provide your solution of this tag
-                        <input id="solve" type="text" minLength="2" onChange={this.provideLetter}/>
-                    </label>
-                    <input id="solution" type="submit" value="Check my solution"
-                           onClick={this.state.checkSolution}/>
-                    <button id="guess" onClick={this.state.guessLetters}>Guess letters</button>
-                </form>
-                <button id="refresh" className={this.state.continueIsShown ? "show" : "hide"}
-                        onClick={() => {
-                            this.props.refreshGame();
-                            this.setState({
-                                imgIsReady: false
-                            })
-                        }}>Continue the game
-                </button>
-                <button id="stop" className={this.state.continueIsShown ? "show" : "hide"}
-                        onClick={() => {
-                            this.stopGame();
-                            this.props.stopGame()
-                        }}>Stop the game
-                </button>
+                <div id="provideSolution">
+                    <form className={this.state.inputIsShown ? "show" : "hide"}>
+                        <label id="answer"> Provide your solution of this tag:
+                            <input id="solve" type="text" minLength="2" onChange={this.provideLetter}/>
+                        </label>
+                        <div className="checkButtons">
+                            <button id="solution" onClick={this.state.checkSolution}>Check my solution</button>
+                            <button id="guess" onClick={this.state.guessLetters}>No idea... Still guess letters</button>
+                        </div>
+                    </form>
+                </div>
+                <div id="continueOrStop">
+                    <button id="refresh" className={this.state.continueIsShown ? "show" : "hide"}
+                            onClick={() => {
+                                this.props.refreshGame();
+                                this.setState({
+                                    imgIsReady: false
+                                })
+                            }}>Continue the game
+                    </button>
+                    <button id="stop" className={this.state.continueIsShown ? "show" : "hide"}
+                            onClick={() => {
+                                this.stopGame();
+                                this.props.stopGame()
+                            }}>Stop the game
+                    </button>
+                </div>
                 <div id="message" className={this.state.divIsShown ? "show" : "hide"}>
                     <p>{this.state.infoMessage}</p>
                     <h1>{this.state.letter}</h1>

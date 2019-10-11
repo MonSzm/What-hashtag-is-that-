@@ -9,7 +9,6 @@
 * {
     font-family: 'underdogregular', cursive;
     background-size: auto;
-
 }
 
 .app {
@@ -29,8 +28,7 @@
 }
 
 #picture {
-    /*text-align: center;*/
-    margin-left: 5%;
+    margin-left: 1%;
 }
 
 #welcome {
@@ -67,15 +65,9 @@
 
 .point {
     width: 15%;
-    /*text-align: center;*/
-}
-
-.points {
-
 }
 
 .goodLuck {
-    /*margin-right: 3%;*/
     font-size: 1.5em;
     width: 15%;
     text-align: center;
@@ -123,9 +115,7 @@
 #startGame {
     background-image: url("2868118.jpg");
     background-size: cover;
-    padding: 2%;
     z-index: 1;
-    /*position: absolute;*/
 }
 
 #frame {
@@ -133,8 +123,6 @@
     background-color: white;
     z-index: 2;
     border: 2px solid grey;
-    /*position: relative;*/
-    margin-top: -3%;
 }
 
 #photo {
@@ -169,13 +157,7 @@
     margin-left: 72%;
 }
 
-#image {
-    /*position: relative;*/
-}
-
 .img {
-    /*position: relative;*/
-    /*width: 90%;*/
     max-height: 24em;
     display: block;
     margin-left: auto;
@@ -185,22 +167,47 @@
 
 #lines {
     position: absolute;
-    /*margin-top: -35em;*/
-    /*margin-left: 45em;*/
-    left: 50em;
+    left: 45em;
     top: 2em;
     margin-left: auto;
     margin-right: auto;
-    width: 27em;
-    background-color: lightblue;
+    width: 35em;
+    height: 35em;
     text-align: center;
-    letter-spacing: 0.4em;
 }
 
-.spaces {
-    /*letter-spacing: 0.4em;*/
+.tag {
+    letter-spacing: 0.3em;
     word-wrap: break-word;
-    font-size: 3.5em;
+    font-size: 3em;
+    height: 7em;
+}
+
+.points {
+    font-size: 1.1em;
+    text-align: end;
+    margin: 1% 2% 4%;
+}
+
+#totalPoints {
+    color: #224469;
+    font-size: 1.5em;
+}
+
+#solveTag {
+    box-shadow: 17px 17px 17px -4px #276873;
+    background: linear-gradient(to bottom, #599bb3 5%, #408c99 100%);
+    background-color: #599bb3;
+    border-radius: 18px;
+    display: inline-block;
+    cursor: pointer;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 22px;
+    text-decoration: none;
+    text-shadow: 12px 11px 3px #3d768a;
+    margin-left: 50%;
 }
 
 #symbols {
@@ -251,4 +258,86 @@
     color: grey;
     margin-top: -0.5em;
     font-size: 0.75em;
+}
+
+#provideSolution {
+    position: absolute;
+    left: 47em;
+    bottom: 2em;
+}
+
+#answer {
+    font-size: 1em;
+    font-weight: bold;
+}
+
+#solve {
+    font-size: 20px;
+    width: 23em;
+    height: 1.2em;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    border-radius: 10px;
+    display: inline-block;
+    background: linear-gradient(to bottom, #c0d8d7 5%, #a7afb0 100%);
+}
+
+.checkButtons {
+    justify-content: space-between;
+}
+
+#solution, #guess {
+    box-shadow: 17px 17px 17px -4px #276873;
+    background: linear-gradient(to bottom, #599bb3 5%, #408c99 100%);
+    background-color: #599bb3;
+    border-radius: 18px;
+    display: inline-block;
+    cursor: pointer;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 6px 13px;
+    text-decoration: none;
+    text-shadow: 12px 11px 3px #3d768a;
+}
+
+#solution {
+    margin-left: 1.5em;
+}
+
+#guess {
+    margin-left: 2em;
+}
+
+#infoAboutSolution {
+    position: absolute;
+    left: 47em;
+    top: 17em;
+    color: darkslategrey;
+    font-style: italic;
+}
+
+#continueOrStop {
+    position: absolute;
+    left: 50em;
+    top: 22em;
+}
+
+#stop {
+    left: 6em;
+}
+
+#refresh, #stop {
+    box-shadow: 17px 17px 17px -4px #276873;
+    background: linear-gradient(to bottom, #599bb3 5%, #408c99 100%);
+    background-color: #599bb3;
+    border-radius: 18px;
+    display: inline-block;
+    cursor: pointer;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 6px 13px;
+    text-decoration: none;
+    text-shadow: 12px 11px 3px #3d768a;
 }
