@@ -31,14 +31,15 @@
     margin-left: 1%;
 }
 
-#welcome {
+#welcome, #stopGame {
     background-image: url("19366.jpg");
-    background-size: 100%;
+    background-size: cover;
 }
 
 .welcomePage {
     text-align: center;
     font-size: 3em;
+    margin: auto;
 }
 
 .center {
@@ -46,8 +47,8 @@
 }
 
 .rules {
-    margin-left: 3em;
     display: flex;
+    margin: 4% 3%;
 }
 
 .bold {
@@ -61,16 +62,19 @@
 
 .score {
     display: flex;
+    margin: 2% 4%;
 }
 
 .point {
-    width: 15%;
+    width: 20%;
+    font-size: 1.5em;
 }
 
 .goodLuck {
     font-size: 1.5em;
-    width: 15%;
+    width: 30%;
     text-align: center;
+    margin: 0;
 }
 
 .startGame {
@@ -100,12 +104,30 @@
 }
 
 .description {
+    width: 50%;
+    margin-left: 4%;
+    font-style: italic;
+    font-size: 1.1em;
+    color: #456394;
+    font-weight: 500;
+}
+
+.mainRules {
     width: 40%;
-    margin-right: 3%;
+    margin-left: 5%;
+}
+
+#main {
+    font-size: 1.5em;
 }
 
 .info {
     width: 70%;
+    text-align: center;
+    color: #456394;
+    font-size: 1.6em;
+    margin-top: 2%;
+    margin-bottom: 0;
 }
 
 .information {
@@ -185,8 +207,17 @@
 
 .points {
     font-size: 1.1em;
-    text-align: end;
-    margin: 1% 2% 4%;
+    text-align: start;
+    width: 60%;
+}
+
+.title {
+    margin: auto auto 2% auto;
+    /*margin-bottom: 2%;*/
+}
+
+.underline {
+    text-decoration: underline;
 }
 
 #totalPoints {
@@ -194,7 +225,7 @@
     font-size: 1.5em;
 }
 
-#solveTag {
+.solveTag {
     box-shadow: 17px 17px 17px -4px #276873;
     background: linear-gradient(to bottom, #599bb3 5%, #408c99 100%);
     background-color: #599bb3;
@@ -262,8 +293,7 @@
 
 #provideSolution {
     position: absolute;
-    left: 47em;
-    bottom: 2em;
+    left: 60%;
 }
 
 #answer {
@@ -311,23 +341,26 @@
 
 #infoAboutSolution {
     position: absolute;
-    left: 47em;
-    top: 17em;
+    left: 55%;
+    top: 45%;
     color: darkslategrey;
     font-style: italic;
+    width: 43%;
+    text-align: center;
 }
 
 #continueOrStop {
     position: absolute;
-    left: 50em;
-    top: 22em;
+    left: 60%;
+    top: 55%;
+    width: 40%;
 }
 
 #stop {
     left: 6em;
 }
 
-#refresh, #stop {
+.refresh, .stop {
     box-shadow: 17px 17px 17px -4px #276873;
     background: linear-gradient(to bottom, #599bb3 5%, #408c99 100%);
     background-color: #599bb3;
@@ -340,4 +373,69 @@
     padding: 6px 13px;
     text-decoration: none;
     text-shadow: 12px 11px 3px #3d768a;
+    margin-right: 3%;
+    width: 40%;
+}
+
+#message {
+    position: absolute;
+    top: 25%;
+    left: 10%;
+    background: rgba(211, 211, 211, 0.5);
+    width: 28%;
+    text-align: center;
+}
+
+.infoMessage {
+    font-size: 2em;
+    margin: auto;
+}
+
+.letter {
+    font-size: 7em;
+    margin: auto;
+}
+
+#stopGame {
+    text-align: center;
+    font-size: 1.5em;
+}
+
+#end {
+    margin: 0;
+    padding: 10% 0 0 0;
+}
+
+.end2 {
+    padding: 0 0 5% 0;
+    font-weight: bold;
+}
+
+#endInfo {
+    text-align: end;
+    padding: 13% 10% 0 0;
+}
+
+#startAgain {
+    text-align: end;
+    padding: 0 8% 3% 0;
+}
+
+#startAgainButton {
+    box-shadow: 17px 17px 17px -4px #276873;
+    background: linear-gradient(to bottom, #599bb3 5%, #408c99 100%);
+    background-color: #599bb3;
+    border-radius: 18px;
+    display: inline-block;
+    cursor: pointer;
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 8px 20px;
+    text-decoration: none;
+    text-shadow: 12px 11px 3px #3d768a;
+}
+
+.totalScore {
+    margin-left: 12em;
 }

@@ -14,24 +14,21 @@ class WelcomePage extends Component {
 
     render() {
         return (
-            <div>
+            <div id="firstPage">
                 <h1 className="welcomePage">What hashtag is that?</h1>
                 <div className="rules">
                     <p className="description">As the name suggests this game is about hashtags. Try to guess the
-                        hashtag
-                        based on the picture.
-                        Provide letters and see if you are right.</p>
-                    <div><h3>THE MAIN RULES:</h3>
+                        hashtag based on the picture. Provide letters and see if you are right.</p>
+                    <div className="mainRules"><h3 id="main">THE MAIN RULES:</h3>
                         <ul>
-                            <li>Only <span className="bold">three lifes</span> to guess the hashtag</li>
                             <li>Yes for <span className="bold">Polish signs</span></li>
                             <li>Yes for <span className="bold">Polish declension</span></li>
-                            <li>Use input to provide whole hashtag. NO RISK, NO FUN!
+                            <li>Use input to provide whole hashtag. <span className="bold">NO RISK, NO FUN!</span>
                                 <ul>
-                                    <li><span className="bold">Good answer</span> -> <span
+                                    <li><span className="bold">&#x1F60A; Good answer</span> -> <span
                                         className="bold">collect</span> extra points
                                     </li>
-                                    <li><span className="bold">Wrong answer</span> -> <span
+                                    <li><span className="bold">&#x1F615; Almost good answer</span> -> <span
                                         className="bold">loose</span> extra points
                                     </li>
                                 </ul>
@@ -42,18 +39,28 @@ class WelcomePage extends Component {
                 </div>
                 <div className="score">
                     <h3 className="point">SCORING RULES:</h3>
-                    <ul className="points">Provide letters <span className="bold">ONE BY ONE</span>:
-                        <li><span className="bold">Really good:</span> one point for every correct letter</li>
-                        <li><span className="bold">Almost good:</span> one negative point for wrong letter</li>
+                    <ul className="points"><p className="title">Provide letters <span className="bold">ONE BY ONE</span>:
+                    </p>
+                        <li><span className="bold">&#x1F60A; Really good:</span> <span
+                            className="underline">one point</span> for every correct letter
+                        </li>
+                        <li><span className="bold">&#x1F615; Almost good:</span> <span className="underline">one negative point</span> for
+                            wrong letter
+                        </li>
                     </ul>
-                    <ul className="points">Provide <span className="bold">WHOLE HASHTAG (without hashtag icon - it means "#")</span>:
-                        <li><span className="bold">Really good:</span> double point for all hidden letters</li>
-                        <li><span className="bold">Almost good:</span> double negative point for all hidden letters
+                    <ul className="points"><p className="title">Provide <span
+                        className="bold">WHOLE HASHTAG (without "#")</span>:</p>
+                        <li><span className="bold">&#x1F60A; Really good:</span> <span className="underline">double point</span> for
+                            all hidden letters
+                        </li>
+                        <li><span className="bold">&#x1F615; Almost good:</span> <span className="underline">double negative point</span> for
+                            all hidden
+                            letters
                         </li>
                     </ul>
                 </div>
                 <div className="information">
-                    <h2 className="info">Remember... you will not cheat the system.</h2>
+                    <h2 className="info">Remember... you will not cheat the system...</h2>
                     <h2 className="goodLuck">GOOD LUCK!</h2>
                 </div>
                 <button className="startGame" onClick={this.startGame}>Start the game
@@ -268,7 +275,7 @@ class Letters extends Component {
             })
         } else {
             this.setState({
-                infoMessage: "Really?! Do you not remember? This letter has been already provided!",
+                infoMessage: "Really?! This letter has been already provided!",
                 divIsShown: true,
                 points: this.state.points
             })
@@ -379,13 +386,14 @@ class Letters extends Component {
             <>
                 <div id="lines">
                     <h1 className="tag"><span id="hashtagSymbol">#</span>{this.state.line}</h1>
-                    <h4 className="points">YOUR SCORE: <span id="totalPoints">{this.state.points} point(s)</span></h4>
-                    <button id="solveTag" className={this.state.buttonIsShown ? "show" : "hide"}
+                    <h4 className="totalScore">YOUR SCORE: <span id="totalPoints">{this.state.points} point(s)</span>
+                    </h4>
+                    <button className={this.state.buttonIsShown ? "show solveTag" : "hide"}
                             onClick={this.solveTheTag}>Solve the tag
                     </button>
                 </div>
                 <div id="infoAboutSolution" className={this.state.h1IsShown ? "show" : "hide"}>
-                    <h2>{this.state.infoAboutSolution}</h2>
+                    <h2 style={this.state.solution === this.props.tag ? {color: "#109c20"} : {color: "#c9001d"}}>{this.state.infoAboutSolution}</h2>
                 </div>
                 <div id="provideSolution">
                     <form className={this.state.inputIsShown ? "show" : "hide"}>
@@ -399,7 +407,7 @@ class Letters extends Component {
                     </form>
                 </div>
                 <div id="continueOrStop">
-                    <button id="refresh" className={this.state.continueIsShown ? "show" : "hide"}
+                    <button id="refresh" className={this.state.continueIsShown ? "show refresh" : "hide"}
                             onClick={() => {
                                 this.props.refreshGame();
                                 this.setState({
@@ -407,7 +415,7 @@ class Letters extends Component {
                                 })
                             }}>Continue the game
                     </button>
-                    <button id="stop" className={this.state.continueIsShown ? "show" : "hide"}
+                    <button id="stop" className={this.state.continueIsShown ? "show stop" : "hide"}
                             onClick={() => {
                                 this.stopGame();
                                 this.props.stopGame()
@@ -415,8 +423,8 @@ class Letters extends Component {
                     </button>
                 </div>
                 <div id="message" className={this.state.divIsShown ? "show" : "hide"}>
-                    <p>{this.state.infoMessage}</p>
-                    <h1>{this.state.letter}</h1>
+                    <p className="infoMessage">{this.state.infoMessage}</p>
+                    <h1 className="letter">{this.state.letter}</h1>
                 </div>
             </>
         )
@@ -427,7 +435,6 @@ class Stop
     extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
     };
 
     startAgain = event => {
@@ -437,12 +444,15 @@ class Stop
 
     render() {
         return (
-            <>
-                <p>Hope that it was nice time for you and you like this hashtag game.</p>
-                <p>Your points: {this.props.points}</p>
-                <p>See you!!!</p>
-                <button onClick={this.startAgain}>Start the game again</button>
-            </>
+            <div id="stopGame">
+                <p id="end">Hope it was nice time and you like this hashtag game.</p>
+                <p className="end2">But...<span className="end2"> it is obvious.</span> &#x1F601;</p>
+                <p id="endPoints">Your total score is... &#x1F914; pretty good.</p>
+                <p id="endInfo">See you!!!</p>
+                <div id="startAgain">
+                    <button id="startAgainButton" onClick={this.startAgain}>Start the game again</button>
+                </div>
+            </div>
         )
     }
 }
