@@ -5,7 +5,7 @@
 As the name suggests this game is about hashtags. 
 Try to guess the hashtag based on the picture. 
 Provide letters and see if you are right.
-> **No risk, no fun!**
+> **Remember: No risk, no fun!**
 
 ##2. The main rules
 - Yes for Polish signs.
@@ -23,3 +23,19 @@ Provide letters and see if you are right.
 **Provide WHOLE HASHTAG (without "#"):**
 - 😊 Really good: double point for all hidden letters
 - 😕 Almost good: double negative point for all hidden letters
+
+##4. Project workflow
+This project has been prepared by using library React.js. 
+It was really busy time because of necessity to take into consideration all possible options.
+
+
+##5. To do in the next time
+- Only three chances
+- RWD for the main game (the second site)
+- Provide total points on the last page - after finish the game
+- Saving results of all users
+- Letters provided too quickly - to solve this case
+- Clear input form
+
+##GOOD LUCK! 
+>Really_nice_IT_girl

@@ -118,9 +118,11 @@ class Picture extends Component {
                 for (let i = 0; i < lowerCase.length; i++) {
                     if (letters.indexOf(lowerCase[i]) >= 0) {
                         line += lowerCase[i] === " " ? " " : "_";
+                    } else {
+                        return null
                     }
                 }
-                console.log('lines:', line);
+                console.log('Lines:', line);
                 this.setState({
                     line: line,
                     tag: lowerCase,
@@ -196,7 +198,9 @@ class Letters extends Component {
             totalLettersToShow: 0,
             clickedLetters: "",
             shouldRefresh: false
-        }
+        };
+        this.checkSolution = this.checkSolution.bind(this);
+        this.provideLetter = this.provideLetter.bind(this);
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -243,16 +247,11 @@ class Letters extends Component {
         for (let i = 0; i < this.props.tag.length; i++) {
             if (this.props.tag[i] === this.state.letter) {
                 arrayWithLinesToShow.push(i);
-                console.log("Great! This tag concerns letter " + this.state.letter);
             }
         }
-
-        console.log('Provided letters: ', this.state.clickedLetters);
-        console.log('Check letter: ', this.state.clickedLetters.indexOf(this.state.letter));
         this.setState({
             totalLettersToShow: this.state.totalLettersToShow + arrayWithLinesToShow.length
         });
-        console.log(arrayWithLinesToShow);
         console.log('Total letters to show:', this.state.totalLettersToShow);
         if (arrayWithLinesToShow.length > 0 && this.state.clickedLetters.indexOf(this.state.letter) === -1) {
             this.setState({
@@ -290,7 +289,6 @@ class Letters extends Component {
                 divIsShown: false
             })
         }, 1000);
-        console.log(this.state.numberOfLettersToShow);
 
         this.setState({
             clickedLetters: this.state.clickedLetters + this.state.letter
@@ -298,7 +296,6 @@ class Letters extends Component {
     };
 
     provideLetter = event => {
-        console.log(event.target.value);
         this.setState({solution: event.target.value});
     };
 
@@ -327,7 +324,8 @@ class Letters extends Component {
                 inputIsShown: false,
                 buttonIsShown: false,
                 continueIsShown: true,
-                points: this.state.points + ((this.props.tag.length - this.state.totalLettersToShow - counter) * 2)
+                points: this.state.points + ((this.props.tag.length - this.state.totalLettersToShow - counter) * 2),
+                // solution: ""
             });
         } else {
             let negativePoints = (this.props.tag.length - this.state.totalLettersToShow - counter) * 2;
@@ -347,7 +345,8 @@ class Letters extends Component {
                 inputIsShown: false,
                 buttonIsShown: false,
                 continueIsShown: true,
-                points: (this.state.points - (negativePoints) > 0 ? (this.state.points - (negativePoints)) : 0)
+                points: (this.state.points - (negativePoints) > 0 ? (this.state.points - (negativePoints)) : 0),
+                // solution: ""
             });
         }
     };
@@ -393,15 +392,20 @@ class Letters extends Component {
                     </button>
                 </div>
                 <div id="infoAboutSolution" className={this.state.h1IsShown ? "show" : "hide"}>
-                    <h2 style={this.state.solution === this.props.tag ? {color: "#109c20"} : {color: "#c9001d"}}>{this.state.infoAboutSolution}</h2>
+                    <h2 style={this.state.solution === this.props.tag ? {color: "#109c20"} : {color: "#c9001d"}}
+                        onChange={() => {
+                            this.setState({solution: ""})
+                        }}>{this.state.infoAboutSolution}</h2>
                 </div>
                 <div id="provideSolution">
                     <form className={this.state.inputIsShown ? "show" : "hide"}>
                         <label id="answer"> Provide your solution of this tag:
-                            <input id="solve" type="text" minLength="2" onChange={this.provideLetter}/>
+                            <input id="solve" type="text" minLength="2" value={this.state.solution}
+                                   onChange={this.provideLetter}/>
                         </label>
                         <div className="checkButtons">
-                            <button id="solution" onClick={this.state.checkSolution}>Check my solution</button>
+                            <button id="solution" type="submit" onClick={this.state.checkSolution}>Check my solution
+                            </button>
                             <button id="guess" onClick={this.state.guessLetters}>No idea... Still guess letters</button>
                         </div>
                     </form>
