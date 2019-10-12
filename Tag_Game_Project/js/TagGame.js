@@ -326,7 +326,9 @@ class Letters extends Component {
                 continueIsShown: true,
                 points: this.state.points + ((this.props.tag.length - this.state.totalLettersToShow - counter) * 2),
                 // solution: ""
+
             });
+
         } else {
             let negativePoints = (this.props.tag.length - this.state.totalLettersToShow - counter) * 2;
             if ((this.state.points - negativePoints) < 0) {
@@ -349,6 +351,7 @@ class Letters extends Component {
                 // solution: ""
             });
         }
+        document.getElementById('solve').value = ''
     };
 
     guessLetters = event => {
@@ -400,7 +403,7 @@ class Letters extends Component {
                 <div id="provideSolution">
                     <form className={this.state.inputIsShown ? "show" : "hide"}>
                         <label id="answer"> Provide your solution of this tag:
-                            <input id="solve" type="text" minLength="2" value={this.state.solution}
+                            <input id="solve" type="text" minLength="2" autocomplete="off"
                                    onChange={this.provideLetter}/>
                         </label>
                         <div className="checkButtons">

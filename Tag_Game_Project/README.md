@@ -35,7 +35,6 @@ It was really busy time because of necessity to take into consideration all poss
 - Provide total points on the last page - after finish the game
 - Saving results of all users
 - Letters provided too quickly - to solve this case
-- Clear input form
 
 ##GOOD LUCK! 
 >Really_nice_IT_girl
